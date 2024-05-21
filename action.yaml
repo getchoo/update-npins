@@ -1,0 +1,87 @@
+name: "Update npins"
+description: "Update your npins sources and create a PR"
+
+inputs:
+  sources:
+    description: "A space separated list of sources to update"
+    required: false
+    default: ""
+  npins-directory:
+    description: "A directory where npins' sources.json and default.nix are located"
+    required: false
+    default: ""
+  commit-message:
+    description: "A message to use when committing changes"
+    required: true 
+    default: "npins: update sources"
+  author:
+    description: "The author to use when committing changes"
+    required:  false
+    default: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+  signoff:
+    description: "Whether to signoff commits"
+    required: false
+    default: true
+  token:
+    description: "Token for creating PR"
+    required: true
+    default: ${{ github.token }}
+  pr-branch:
+    description: "The name of the PR branch created"
+    required: false
+    default: "npins-update"
+  pr-target:
+    description: "The target branch of the created PR"
+    required: false
+  pr-title:
+    description: "The title of the created PR"
+    required: false
+    default: "npins: update sources"
+  pr-body:
+    description: "The body of the created PR"
+    required: false
+    default:
+      Automated pull request created by [update-npins](https://github.com/getchoo/update-npins)
+  pr-labels:
+    description: "A comma or newline-separated list of labels to add to the created PR"
+    required: false
+
+outputs:
+  pr-number:
+    description: "The number of the created PR"
+    value: ${{ steps.pr.outputs.pull-request-number }}
+  pr-url:
+    description: "The URL of the created PR"
+    value: ${{ steps.pr.outputs.pull-request-url }}
+  pr-operation:
+    description: "The operation performed on the created PR"
+    value: ${{ steps.pr.outputs.pull-request-operation }}
+  pr-head-sha:
+    description: "The HEAD commit SHA of the created PR"
+    value: ${{ steps.pr.outputs.pull-request-head-sha }}
+
+runs:
+  using: composite
+
+  steps:
+    - name: Run `npins update`
+      env:
+        SOURCES: ${{ inputs.sources }}
+        NPINS_DIRECTORY: ${{ inputs.npins-directory }}
+      shell: bash
+      run: |
+        npins update "${SOURCES[@]}"
+
+    - name: Create PR
+      id: pr
+      uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e # v6.0.5
+      with:
+        token: ${{ inputs.token }}
+        commit-message: ${{ inputs.commit-message }}
+        committer: ${{ inputs.author }}
+        signoff: ${{ inputs.signoff }}
+        branch: ${{ inputs.pr-branch }}
+        base: ${{ inputs.pr-target }}
+        title: ${{ inputs.pr-title }}
+        body: ${{ inputs.pr-body }}
+        labels: ${{ inputs.pr-labels }}

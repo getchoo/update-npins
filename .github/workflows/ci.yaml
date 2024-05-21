@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run test
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write 
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
+
+      - name: Install npins
+        run: |
+          nix profile install 'nixpkgs#npins'
+
+      - name: Update npins sources
+        uses: ./.
+        with:
+          sources: "nixpkgs"
+          npins-directory: ./test/npins
+          commit-message: "test: update npins sources"

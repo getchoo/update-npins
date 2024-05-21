@@ -1,0 +1,24 @@
+name: Publish
+
+on:
+  release:
+    types: [ released ]
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Existing tag to publish"
+        required: true
+
+jobs:
+  publish:
+    name: Publish action
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/publish-action@f784495ce78a41bac4ed7e34a73f0034015764bb # v0.3.0
+        with:
+          source-tag: ${{ inputs.tag_name || github.event.release.tag_name }}
