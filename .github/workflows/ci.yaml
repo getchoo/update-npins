@@ -7,9 +7,13 @@ on:
 
 jobs:
   test:
-    name: Run test
+    name: Run test (with `${{ matrix.sources }}`)
 
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        sources: ["", "nixpkgs nixos-24.05"]
 
     permissions:
       contents: write 
