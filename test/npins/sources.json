@@ -1,5 +1,11 @@
 {
   "pins": {
+    "nixos-24.05": {
+      "type": "Channel",
+      "name": "nixos-24.05",
+      "url": "https://releases.nixos.org/nixos/24.05/nixos-24.05.803.b3b2b28c1daa/nixexprs.tar.xz",
+      "hash": "186cvfziz5kd7qknw4fb9z2b2fpqi9gbsyw3gky7hmj0bzdan64b"
+    },
     "nixpkgs": {
       "type": "Channel",
       "name": "nixpkgs-unstable",

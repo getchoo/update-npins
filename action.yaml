@@ -70,7 +70,11 @@ runs:
         NPINS_DIRECTORY: ${{ inputs.npins-directory }}
       shell: bash
       run: |
-        npins update "${SOURCES[@]}"
+        if [ "$SOURCES" = "" ]; then
+          npins update
+        else
+          npins update $SOURCES
+        fi
 
     - name: Create PR
       id: pr
